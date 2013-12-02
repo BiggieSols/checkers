@@ -77,8 +77,16 @@ class Piece
     valid_slides + valid_jumps
   end
 
+  def valid_recursive_moves
+    valid_slides + valid_recursive_jumps
+  end
+
   def has_move?(coord)
     valid_moves.include?( coord )
+  end
+
+  def has_recursive_move?(coord)
+    valid_recursive_moves.include?( coord )
   end
 
   def valid_slides
@@ -175,4 +183,29 @@ class Piece
   def valid_jump?(new_pos)
     valid_jumps.include?( new_pos )
   end
+
+  def valid_recursive_jumps
+    valid_rec_jumps = valid_jumps
+
+    return valid_rec_jumps if valid_jumps.empty?
+
+    valid_jumps.each do |jump|
+      board_dup = @board.dup
+
+      self_dup = board_dup[ @position[0], @position[1] ]
+
+      self_dup.perform_jump(jump)
+
+      new_jumps = self_dup.valid_recursive_jumps
+
+      new_jumps.delete(@position)
+
+      valid_rec_jumps += new_jumps
+    end
+
+    valid_rec_jumps
+  end
 end 
+
+
+

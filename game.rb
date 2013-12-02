@@ -22,9 +22,12 @@ class Game
   def play
     # don't forget to add begin/rescue with InvalidMoveError
     until @board.won?
+      puts @board
       begin
         start_piece = @board[*get_start_piece_input]
-        raise InvalidPieceSelectionError.new("must select a #{curr_player_name} piece")
+        if start_piece.nil? || start_piece.color != @current_player
+          raise InvalidPieceSelectionError.new("must select a #{curr_player_name} piece") 
+        end
       rescue InvalidPieceSelectionError => e
         puts e.message
         retry
@@ -34,9 +37,11 @@ class Game
         move_sequence = get_move_sequence_input
         start_piece.perform_moves(move_sequence)
       rescue InvalidMoveError => e
+        puts "invalid move!"
         puts e.message
         retry
       end
+      switch_player
     end
 
     puts "winner is #{@board.winner}!"
@@ -44,7 +49,15 @@ class Game
 
   def get_start_piece_input
     puts "enter your starting piece as a coordinate (e.g. 0, 0)"
-    start_coords = gets.chomp.split(/,?\s*/)
+    start_coords = gets.chomp.split(/,?\s*/).map(&:to_i)
+    check_valid_coordinate(start_coords)
+    start_coords
+  end
+
+  def check_valid_coordinate(coordinate)
+    unless coordinate =~ /^[0-7],?\s*[0-7]$/
+      raise InvalidPieceSelectionError.new("must select a coordinate (e.g. 0, 0 )") 
+    end
   end
 
   def get_move_sequence_input
@@ -52,11 +65,14 @@ class Game
     puts "end your selection by pressing 'e'"
     coords_arr = []
     while true
-      input = gets.chomp
+      input = gets.chomp.map(&:to_i)
       return coords_arr if input.downcase == "e"
+      check_valid_coordinate(input)
       coords_arr << input.split(/,?\s*/)
     end
+    coords_arr
   end
 end
 
 g = Game.new
+g.play

@@ -36,9 +36,9 @@ class Piece
 
   def perform_single_move(move)
     if valid_slide?( move )
-      perform_slide ( move )
+      perform_slide( move )
     else
-      perform_jump ( move )
+      perform_jump( move )
     end
   end
 
@@ -62,15 +62,14 @@ class Piece
   def perform_slide(new_pos)
     raise InvalidMoveError.new("not a valid slide") unless valid_slide?( new_pos )
     @board.move(self, new_pos)
+    maybe_promote
+
   end
 
   def perform_jump(new_pos)
     raise InvalidMoveError.new("not a valid jump") unless valid_jump?( new_pos )
-
     remove_middle_piece( new_pos )
-
     @board.move( self, new_pos )
-
     maybe_promote
   end
 
@@ -100,12 +99,12 @@ class Piece
 
   def directions
     return [1, -1] if @king
-    @color == :b ? [1] : [-1]
+    @color == :b ? [-1] : [1]
   end
 
   # black back row is 0, white back row is 7
   def opponent_back_row
-    @color == :b ? 7 : 0
+    @color == :b ? 0 : 7
   end
 
   def maybe_promote
@@ -159,11 +158,11 @@ class Piece
     pos_to_remove =   between_pos( @position, new_pos )
     piece_to_remove = @board[ *pos_to_remove ]
     @board.remove_piece( piece_to_remove )
-    maybe_promote
   end
 
   def valid_slide?(new_pos)
     valid_slides.include?( new_pos )
+
   end
 
   def valid_jump?(new_pos)

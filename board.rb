@@ -5,6 +5,21 @@ require 'colorize'
 class Board
   def initialize
     @grid = Array.new(8) { Array.new(8) }
+    set_up_board
+  end
+
+  def set_up_board
+    8.times do |row|
+      if row.even?
+        add_piece(Piece.new([1, row], :w, self), [1, row])
+        add_piece(Piece.new([5, row], :b, self), [5, row])
+        add_piece(Piece.new([7, row], :b, self), [7, row])
+      else
+        add_piece(Piece.new([0, row], :w, self), [0, row])
+        add_piece(Piece.new([2, row], :w, self), [2, row])
+        add_piece(Piece.new([6, row], :b, self), [6, row])
+      end
+    end
   end
 
   def to_s
@@ -43,7 +58,7 @@ class Board
   end
 
   def all_pieces(color = nil)
-    return @grid.flatten.compact if color == nil
+    return @grid.flatten.compact if color.nil?
     @grid.flatten.compact.select { |piece| piece.color == color }
   end
 
@@ -52,7 +67,7 @@ class Board
   end
 
   def empty_pos?(pos)
-    self[*pos] == nil
+    self[*pos].nil?
   end
 
   def move(piece, new_pos)
@@ -73,9 +88,12 @@ class Board
 end
 
 b = Board.new
-p1 = Piece.new([2, 2], :b, b, true)
-p2 = Piece.new([5, 5], :w, b, true)
-p3 = Piece.new([3, 3], :w, b, true)
+puts b
+=begin
+
+p1 = Piece.new([2, 2], :w, b, false)
+p2 = Piece.new([5, 5], :b, b, true)
+p3 = Piece.new([3, 3], :b, b, true)
 
 
 b.add_piece(p1, p1.position)
@@ -85,13 +103,17 @@ b.add_piece(p3, p3.position)
 
 puts b
 
-# b.render
-
 # # p1.perform_jump([6, 6])
 # # b.render
 
-# p p1.valid_slides
+# p p1.valid_jumps
 # p1.perform_slide([5, 3])
 
-p1.perform_moves( [[4, 4], [6, 5]] )
+p1.perform_moves( [[4, 4], [6, 6]] )#, [6, 5]] )
 puts b
+# puts p1.king
+p1.perform_moves( [[7, 5]])
+puts b
+# p p1.king
+
+=end

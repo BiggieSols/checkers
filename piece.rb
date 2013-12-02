@@ -25,7 +25,6 @@ class Piece
     @king == other_piece.king
   end
 
-
   def perform_moves!(move_sequence)
     if move_sequence.length == 1
       perform_single_move(move_sequence.first)

@@ -41,6 +41,19 @@ class Board
     @grid[row][col]
   end
 
+  def won?
+    all_pieces(:w).empty? || all_pieces(:b).empty?
+  end
+
+  def winner
+    return "Black" if all_pieces(:w).empty?
+    return "White" if all_pieces(:b).empty?
+    "Incomplete"
+  end
+
+  # def draw?
+  # end
+
   def dup
     dup_board = Board.new
 
@@ -87,8 +100,8 @@ class Board
   end
 end
 
-b = Board.new
-puts b
+# b = Board.new
+# puts b
 =begin
 
 p1 = Piece.new([2, 2], :w, b, false)

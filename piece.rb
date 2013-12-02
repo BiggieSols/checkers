@@ -73,6 +73,13 @@ class Piece
     maybe_promote
   end
 
+  def valid_moves
+    valid_slides + valid_jumps
+  end
+
+  def has_move?(coord)
+    valid_moves.include?( coord )
+  end
 
   def valid_slides
     potential_slides.select { |new_pos| @board.empty_pos?( new_pos ) }

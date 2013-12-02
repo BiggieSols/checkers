@@ -37,6 +37,34 @@ class Board
     board_render + "\n"
   end
 
+  # testing for use with current piece identification
+  def render(args)
+    # puts "\e[H\e[2J" #will clear the screen
+    params = {
+      piece: nil,
+      pointer: nil
+    }.merge( args )
+
+    selected_piece = params[:piece].nil? ? [] : params[:piece]
+
+    puts "  0 1 2 3 4 5 6 7"
+    8.times do |row_index|
+      print "#{row_index} "
+      8.times do |col_index|
+
+        background = ((row_index + col_index) % 2 == 0) ? :light_blue : :light_green
+        background = :red if selected_piece.has_move?( [row_index, col_index] )
+        background = :black if [row_index, col_index] == params[:pointer]
+
+        piece = self[row_index, col_index]
+        to_print = piece.nil? ? "  " : piece.to_s
+        print to_print.colorize(background: background)
+      end
+      puts
+    end  
+    puts
+  end
+
   def [](row, col)
     @grid[row][col]
   end

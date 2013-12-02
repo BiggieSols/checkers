@@ -33,6 +33,8 @@ class Game
         retry
       end
 
+      @board.render(piece: start_piece)
+
       begin
         move_sequence = get_move_sequence_input
         start_piece.perform_moves(move_sequence)

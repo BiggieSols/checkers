@@ -68,13 +68,14 @@ class Board
 end
 
 b = Board.new
-p1 = Piece.new([4, 4], :b, b, true)
+p1 = Piece.new([2, 2], :b, b, true)
 p2 = Piece.new([5, 5], :w, b, true)
 p3 = Piece.new([3, 3], :w, b, true)
 
 
 b.add_piece(p1, p1.position)
 b.add_piece(p2, p2.position)
+b.add_piece(p3, p3.position)
 
 
 puts b
@@ -87,5 +88,5 @@ puts b
 # p p1.valid_slides
 # p1.perform_slide([5, 3])
 
-p1.perform_moves!([5, 3])
+p1.perform_moves!( [[4, 4], [6, 6]] )
 puts b

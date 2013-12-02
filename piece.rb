@@ -20,8 +20,11 @@ class Piece
   end
 
   def perform_moves!(move_sequence)
+    puts "move sequence is #{move_sequence.length}"
     if move_sequence.length == 1
-      if is_valid_slide?( move )
+      move = move_sequence[0]
+      puts "move is #{move}"
+      if valid_slide?( move )
         perform_slide ( move )
       else
         perform_jump ( move )

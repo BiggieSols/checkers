@@ -37,6 +37,11 @@ class Board
     dup_board
   end
 
+  # Used with dup method to find equivalent pieces in dup board
+  def find_equivalent_piece(equivalent_piece)
+    all_pieces.select { |piece| piece == equivalent_piece }.first
+  end
+
   def all_pieces(color = nil)
     return @grid.flatten.compact if color == nil
     @grid.flatten.compact.select { |piece| piece.color == color }
@@ -88,5 +93,5 @@ puts b
 # p p1.valid_slides
 # p1.perform_slide([5, 3])
 
-p1.perform_moves!( [[4, 4], [6, 6]] )
+p1.perform_moves( [[4, 4], [6, 5]] )
 puts b

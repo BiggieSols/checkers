@@ -19,8 +19,14 @@ class Piece
     color == :b ? "⚫ " : "⚪ "
   end
 
+  def ==(other_piece)
+    @position == other_piece.position && 
+    @color == other_piece.color && 
+    @king == other_piece.king
+  end
+
+
   def perform_moves!(move_sequence)
-    puts "move sequence is #{move_sequence.length}"
     if move_sequence.length == 1
       move = move_sequence[0]
       puts "move is #{move}"
@@ -41,8 +47,8 @@ class Piece
   end
 
   def is_valid_sequence?(move_sequence)
-    dup_board = Board.dup
-    dup_piece = dup_board.all_pieces.select ( |piece| piece == self ).first
+    dup_board = @board.dup
+    dup_piece = dup_board.find_equivalent_piece(self)
 
     begin
       dup_piece.perform_moves!(move_sequence)
@@ -162,9 +168,5 @@ class Piece
 
   def valid_jump?(new_pos)
     valid_jumps.include?( new_pos )
-  end
-
-  def ==(other_piece)
-    @position == other_piece.position && @color == other_piece.color && @king == other_piece.king
   end
 end 

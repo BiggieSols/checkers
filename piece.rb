@@ -28,17 +28,17 @@ class Piece
 
   def perform_moves!(move_sequence)
     if move_sequence.length == 1
-      move = move_sequence[0]
-      puts "move is #{move}"
-      if valid_slide?( move )
-        perform_slide ( move )
-      else
-        perform_jump ( move )
-      end
+      perform_single_move(move_sequence.first)
     else
-      move_sequence.each do |move|
-        perform_jump( move )
-      end
+      move_sequence.each { |move| perform_jump( move ) }
+    end
+  end
+
+  def perform_single_move(move)
+    if valid_slide?( move )
+      perform_slide ( move )
+    else
+      perform_jump ( move )
     end
   end
 

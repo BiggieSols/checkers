@@ -55,7 +55,7 @@ class Game
   end
 
   def check_valid_coordinate(coordinate)
-    unless coordinate =~ /^[0-7],?\s*[0-7]$/
+    unless coordinate.join(" ") =~ /^[0-7],?\s*[0-7]$/
       raise InvalidPieceSelectionError.new("must select a coordinate (e.g. 0, 0 )") 
     end
   end
@@ -65,10 +65,11 @@ class Game
     puts "end your selection by pressing 'e'"
     coords_arr = []
     while true
-      input = gets.chomp.map(&:to_i)
+      input = gets.chomp #.split(/,?\s*/).map(&:to_i)
       return coords_arr if input.downcase == "e"
+      input = input.split(/\s*,?\s*/).map(&:to_i)
       check_valid_coordinate(input)
-      coords_arr << input.split(/,?\s*/)
+      coords_arr << input
     end
     coords_arr
   end

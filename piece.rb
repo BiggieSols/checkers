@@ -36,11 +36,21 @@ class Piece
     end
   end
 
+  def perform_moves(move_sequence)
+    perform_moves!(move_sequence) if is_valid_sequence?(move_sequence)
+  end
+
   def is_valid_sequence?(move_sequence)
-    new_board = Board.dup
-    # find current piece
-    # perform_moves! on current piece but on the dup board
-    # if this raises an error, then return false, otherwise true
+    dup_board = Board.dup
+    dup_piece = dup_board.all_pieces.select ( |piece| piece == self ).first
+
+    begin
+      dup_piece.perform_moves!(move_sequence)
+    rescue
+      false
+    else
+      true
+    end
   end
 
   def perform_slide(new_pos)
@@ -152,5 +162,9 @@ class Piece
 
   def valid_jump?(new_pos)
     valid_jumps.include?( new_pos )
+  end
+
+  def ==(other_piece)
+    @position == other_piece.position && @color == other_piece.color && @king == other_piece.king
   end
 end 

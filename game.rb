@@ -1,4 +1,3 @@
-require 'debugger'
 require_relative 'board'
 
 
@@ -43,11 +42,10 @@ class Game
 
       begin
         move_sequence = get_move_sequence_input
-        debugger
 
         start_piece.perform_moves(move_sequence)
         raise InvalidMoveError.new("must enter at least one move") if move_sequence.empty?
-      rescue ArgumentError=>e#InvalidMoveError, InvalidPieceSelectionError => e
+      rescue InvalidMoveError, InvalidPieceSelectionError => e
         puts e.message
         retry
       end

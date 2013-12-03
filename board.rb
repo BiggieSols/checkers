@@ -13,11 +13,11 @@ class Board
       if row.even?
         add_piece(Piece.new([1, row], :w, self), [1, row])
         add_piece(Piece.new([5, row], :b, self), [5, row])
-        add_piece(Piece.new([7, row], :b, self), [7, row])
+        add_piece(Piece.new([3, row], :b, self), [3, row]) # change back to 7 later
       else
         add_piece(Piece.new([0, row], :w, self), [0, row])
         add_piece(Piece.new([2, row], :w, self), [2, row])
-        add_piece(Piece.new([6, row], :b, self), [6, row])
+        # add_piece(Piece.new([6, row], :b, self), [6, row])
       end
     end
   end
@@ -53,7 +53,7 @@ class Board
       8.times do |col_index|
 
         background = ((row_index + col_index) % 2 == 0) ? :light_blue : :light_green
-        background = :red if selected_piece.has_recursive_move?( [row_index, col_index] )
+        background = :red if selected_piece.has_recursive_move?( [row_index, col_index] ) #change to has_recursive_move
         background = :black if [row_index, col_index] == params[:pointer]
 
         piece = self[row_index, col_index]

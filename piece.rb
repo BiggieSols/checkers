@@ -104,10 +104,24 @@ class Piece
     [].tap do |arr|
       potential_jumps.each do |jump|
         middle_pos = between_pos( @position, jump )
-        piece = @board[ middle_pos[0], middle_pos[1] ]
-        arr << jump if (!piece.nil? && piece.color != @color)
+        piece = @board[ *middle_pos ]
+        arr << jump if (!piece.nil? && piece.color != @color && @board[*jump].nil?)
       end
     end
+  end
+
+  def valid_recursive_jumps
+    valid_rec_jumps = valid_jumps
+    return valid_rec_jumps if valid_jumps.empty?
+    valid_jumps.each do |jump|
+      board_dup = @board.dup
+      self_dup = board_dup[ *position ]
+      self_dup.perform_jump(jump)
+      new_jumps = self_dup.valid_recursive_jumps
+      new_jumps.delete(@position)
+      valid_rec_jumps += new_jumps
+    end
+    valid_rec_jumps
   end
 
   def move(new_pos)
@@ -185,20 +199,6 @@ class Piece
 
   def valid_jump?(new_pos)
     valid_jumps.include?( new_pos )
-  end
-
-  def valid_recursive_jumps
-    valid_rec_jumps = valid_jumps
-    return valid_rec_jumps if valid_jumps.empty?
-    valid_jumps.each do |jump|
-      board_dup = @board.dup
-      self_dup = board_dup[ @position[0], @position[1] ]
-      self_dup.perform_jump(jump)
-      new_jumps = self_dup.valid_recursive_jumps
-      new_jumps.delete(@position)
-      valid_rec_jumps += new_jumps
-    end
-    valid_rec_jumps
   end
 end 
 

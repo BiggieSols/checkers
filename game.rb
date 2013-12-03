@@ -1,6 +1,13 @@
+require 'debugger'
 require_relative 'board'
 
+
+
 class InvalidPieceSelectionError < StandardError
+end
+
+# mix this in as a module later
+class InvalidMoveError < StandardError
 end
 
 # NOTE TO SELF: add to module later
@@ -20,7 +27,6 @@ class Game
   end
 
   def play
-    # don't forget to add begin/rescue with InvalidMoveError
     until @board.won?
       puts @board
       begin
@@ -28,7 +34,7 @@ class Game
         if start_piece.nil? || start_piece.color != @current_player
           raise InvalidPieceSelectionError.new("must select a #{curr_player_name} piece") 
         end
-      rescue InvalidPieceSelectionError => e
+      rescue InvalidPieceSelectionError, InvalidMoveError => e
         puts e.message
         retry
       end
@@ -37,9 +43,11 @@ class Game
 
       begin
         move_sequence = get_move_sequence_input
+        debugger
+
         start_piece.perform_moves(move_sequence)
-      rescue InvalidMoveError => e
-        puts "invalid move!"
+        raise InvalidMoveError.new("must enter at least one move") if move_sequence.empty?
+      rescue ArgumentError=>e#InvalidMoveError, InvalidPieceSelectionError => e
         puts e.message
         retry
       end
@@ -73,7 +81,6 @@ class Game
       check_valid_coordinate(input)
       coords_arr << input
     end
-    coords_arr
   end
 end
 

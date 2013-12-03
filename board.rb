@@ -3,9 +3,9 @@ require_relative 'piece'
 require 'colorize'
 
 class Board
-  def initialize
+  def initialize(new_board = true)
     @grid = Array.new(8) { Array.new(8) }
-    set_up_board
+    set_up_board if new_board
   end
 
   def set_up_board
@@ -53,7 +53,7 @@ class Board
       8.times do |col_index|
 
         background = ((row_index + col_index) % 2 == 0) ? :light_blue : :light_green
-        background = :red if selected_piece.has_recursive_move?( [row_index, col_index] )
+        background = :red if selected_piece.has_move?( [row_index, col_index] ) #change to recursive later
         background = :black if [row_index, col_index] == params[:pointer]
 
         piece = self[row_index, col_index]
@@ -83,10 +83,10 @@ class Board
   # end
 
   def dup
-    dup_board = Board.new
+    dup_board = Board.new(false)
 
     all_pieces.each do |piece|
-      new_piece = Piece.new( piece.position, piece.color, dup_board, piece.king )
+      new_piece = Piece.new( piece.position.dup, piece.color, dup_board, piece.king )
       dup_board.add_piece(new_piece, new_piece.position)
     end
 
@@ -108,6 +108,8 @@ class Board
   end
 
   def empty_pos?(pos)
+    # print "Testing empty position at #{pos}    "
+    # print "board at this position is #{self[ pos[0], pos[1] ].inspect}"
     self[*pos].nil?
   end
 
@@ -127,34 +129,3 @@ class Board
     piece.position = nil
   end
 end
-
-# b = Board.new
-# puts b
-=begin
-
-p1 = Piece.new([2, 2], :w, b, false)
-p2 = Piece.new([5, 5], :b, b, true)
-p3 = Piece.new([3, 3], :b, b, true)
-
-
-b.add_piece(p1, p1.position)
-b.add_piece(p2, p2.position)
-b.add_piece(p3, p3.position)
-
-
-puts b
-
-# # p1.perform_jump([6, 6])
-# # b.render
-
-# p p1.valid_jumps
-# p1.perform_slide([5, 3])
-
-p1.perform_moves( [[4, 4], [6, 6]] )#, [6, 5]] )
-puts b
-# puts p1.king
-p1.perform_moves( [[7, 5]])
-puts b
-# p p1.king
-
-=end

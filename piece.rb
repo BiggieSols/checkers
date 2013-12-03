@@ -35,8 +35,11 @@ class Piece
 
   def perform_single_move(move)
     if valid_slide?( move )
+      puts "confirmed valid slide"
       perform_slide( move )
+      puts "successfully performed slide"
     else
+      puts "defaulted to jump"
       perform_jump( move )
     end
   end
@@ -52,7 +55,9 @@ class Piece
 
     begin
       dup_piece.perform_moves!(move_sequence)
-    rescue
+    rescue StandardError => e
+      puts e.message
+      puts e.class
       false
     else
       true
@@ -61,9 +66,11 @@ class Piece
 
   def perform_slide(new_pos)
     raise InvalidMoveError.new("not a valid slide") unless valid_slide?( new_pos )
-    @board.move(self, new_pos)
+    old_pos = @position.dup
+    puts "current position has #{@board[*old_pos].inspect}"
+    @board.move( self, new_pos )
+    puts "old position has #{@board[*old_pos].inspect}"
     maybe_promote
-
   end
 
   def perform_jump(new_pos)
@@ -177,7 +184,6 @@ class Piece
 
   def valid_slide?(new_pos)
     valid_slides.include?( new_pos )
-
   end
 
   def valid_jump?(new_pos)

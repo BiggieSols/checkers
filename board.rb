@@ -39,14 +39,14 @@ class Board
 
 
   def render( args={} )
-    puts "\e[H\e[2J" #will clear the screen
     params = {
       piece: nil,
       pointer: nil
+      already_selected: nil
     }.merge( args )
 
-    selected_piece = params[:piece]
-    puts "selected piece is #{selected_piece.inspect}"
+    selected_piece    = params[:piece]
+    already_selected  = params[:already_selected]
 
     puts "  0 1 2 3 4 5 6 7"
     8.times do |row_index|
@@ -58,6 +58,10 @@ class Board
 
         if !selected_piece.nil? && selected_piece.has_recursive_move?( [row_index, col_index] )
           background = :red 
+        end
+
+        if !already_selected.nil? && already_selected.has_recursive_move?( [row_index, col_index] )
+          background = :yellow
         end
 
         piece = self[row_index, col_index]

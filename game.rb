@@ -44,7 +44,7 @@ class Game
       @board.render(piece: start_piece)
 
       begin
-        move_sequence = get_move_sequence_input
+        move_sequence = get_move_sequence_input(start_piece)
 
         start_piece.perform_moves(move_sequence)
         raise InvalidMoveError.new("must enter at least one move") if move_sequence.empty?
@@ -69,22 +69,27 @@ class Game
     end
   end
 
-  def get_move_sequence_input
+  def get_move_sequence_input(start_piece)
     puts "enter your move sequence as a series of coordinates, one per line (e.g. 2, 3 )"
     puts "end your selection by pressing 'e'"
+    # get_arrow_input(start_piece)
     coords_arr = []
     while true
-      input = gets.chomp #.split(/,?\s*/).map(&:to_i)
-      return coords_arr if input.downcase == "e"
-      input = input.split(/\s*,?\s*/).map(&:to_i)
-      check_valid_coordinate(input)
+      puts "\e[H\e[2J" #will clear the screen
+      puts "already selected #{coords_arr}"
+      input = get_arrow_input(start_piece)
+      # input = gets.chomp.split(/,?\s*/).map(&:to_i)
+      return coords_arr if input == "end"
+      # input = input.split(/\s*,?\s*/).map(&:to_i)
+      # check_valid_coordinate(input)
       coords_arr << input
     end
+    coords_arr
   end
 
-  def get_arrow_input
+  def get_arrow_input(start_piece = nil)
     pointer_pos = @last_move || [0, 0]
-    puts @board.render(pointer: pointer_pos)
+    puts @board.render(pointer: pointer_pos, piece: start_piece)
     
     while true
       char = STDIN.getch.to_s
@@ -92,23 +97,23 @@ class Game
       
       case char
       when "D"
-        pointer_pos = move_pointer(pointer_pos, :left)
+        pointer_pos = move_pointer(pointer_pos, :left, start_piece)
       when "C"
-        pointer_pos = move_pointer(pointer_pos, :right)
+        pointer_pos = move_pointer(pointer_pos, :right, start_piece)
       when "A"
-        pointer_pos = move_pointer(pointer_pos, :up)
+        pointer_pos = move_pointer(pointer_pos, :up, start_piece)
       when "B"
-        pointer_pos = move_pointer(pointer_pos, :down)
+        pointer_pos = move_pointer(pointer_pos, :down, start_piece)
       when "\r"
         @last_move = pointer_pos.dup
         return pointer_pos
-      when "q"
-        return "exit"
+      when "e"
+        return "end"
       end
     end
   end
 
-  def move_pointer(pointer, direction)
+  def move_pointer(pointer, direction, start_piece)
     directions = {
       up:     [-1,  0],
       down:   [ 1,  0],
@@ -123,7 +128,7 @@ class Game
     return pointer unless in_bounds(new_pos)
 
 
-    @board.render(pointer: new_pos)
+    @board.render(piece: start_piece, pointer: new_pos)
 
     new_pos
   end

@@ -32,7 +32,7 @@ class Game
     until @board.won?
       puts @board
       begin
-        start_piece = @board[*get_arrow_input_for_start_piece]
+        start_piece = @board[*get_start_piece_input]
         if start_piece.nil? || start_piece.color != @current_player
           raise InvalidPieceSelectionError.new("must select a #{curr_player_name} piece") 
         end
@@ -60,9 +60,7 @@ class Game
 
   def get_start_piece_input
     puts "enter your starting piece as a coordinate (e.g. 0, 0)"
-    start_coords = gets.chomp.split(/,?\s*/).map(&:to_i)
-    check_valid_coordinate(start_coords)
-    start_coords
+    get_arrow_input
   end
 
   def check_valid_coordinate(coordinate)
@@ -84,7 +82,7 @@ class Game
     end
   end
 
-  def get_arrow_input_for_start_piece
+  def get_arrow_input
     pointer_pos = @last_move || [0, 0]
     puts @board.render(pointer: pointer_pos)
     

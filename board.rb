@@ -13,11 +13,11 @@ class Board
       if row.even?
         add_piece(Piece.new([1, row], :w, self), [1, row])
         add_piece(Piece.new([5, row], :b, self), [5, row])
-        add_piece(Piece.new([3, row], :b, self), [3, row]) # change back to 7 later
+        add_piece(Piece.new([7, row], :b, self), [7, row]) # change back to 7 later
       else
         add_piece(Piece.new([0, row], :w, self), [0, row])
         add_piece(Piece.new([2, row], :w, self), [2, row])
-        # add_piece(Piece.new([6, row], :b, self), [6, row])
+        add_piece(Piece.new([6, row], :b, self), [6, row])
       end
     end
   end
@@ -37,15 +37,16 @@ class Board
     board_render + "\n"
   end
 
-  # testing for use with current piece identification
-  def render(args)
-    # puts "\e[H\e[2J" #will clear the screen
+
+  def render( args={} )
+    puts "\e[H\e[2J" #will clear the screen
     params = {
       piece: nil,
       pointer: nil
     }.merge( args )
 
-    selected_piece = params[:piece].nil? ? [] : params[:piece]
+    selected_piece = params[:piece]
+    puts "selected piece is #{selected_piece.inspect}"
 
     puts "  0 1 2 3 4 5 6 7"
     8.times do |row_index|
@@ -53,8 +54,11 @@ class Board
       8.times do |col_index|
 
         background = ((row_index + col_index) % 2 == 0) ? :light_blue : :light_green
-        background = :red if selected_piece.has_recursive_move?( [row_index, col_index] ) #change to has_recursive_move
         background = :black if [row_index, col_index] == params[:pointer]
+
+        if !selected_piece.nil? && selected_piece.has_recursive_move?( [row_index, col_index] )
+          background = :red 
+        end
 
         piece = self[row_index, col_index]
         to_print = piece.nil? ? "  " : piece.to_s

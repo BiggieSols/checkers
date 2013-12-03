@@ -77,7 +77,7 @@ class Game
     while true
       puts "\e[H\e[2J" #will clear the screen
       puts "already selected #{coords_arr}"
-      input = get_arrow_input(start_piece)
+      input = get_arrow_input(start_piece, coords_arr)
       # input = gets.chomp.split(/,?\s*/).map(&:to_i)
       return coords_arr if input == "end"
       # input = input.split(/\s*,?\s*/).map(&:to_i)
@@ -87,7 +87,7 @@ class Game
     coords_arr
   end
 
-  def get_arrow_input(start_piece = nil)
+  def get_arrow_input(start_piece = nil, already_selected = nil)
     pointer_pos = @last_move || [0, 0]
     puts @board.render(pointer: pointer_pos, piece: start_piece)
     
@@ -97,13 +97,13 @@ class Game
       
       case char
       when "D"
-        pointer_pos = move_pointer(pointer_pos, :left, start_piece)
+        pointer_pos = move_pointer(pointer_pos, :left, start_piece, already_selected)
       when "C"
-        pointer_pos = move_pointer(pointer_pos, :right, start_piece)
+        pointer_pos = move_pointer(pointer_pos, :right, start_piece, already_selected)
       when "A"
-        pointer_pos = move_pointer(pointer_pos, :up, start_piece)
+        pointer_pos = move_pointer(pointer_pos, :up, start_piece, already_selected)
       when "B"
-        pointer_pos = move_pointer(pointer_pos, :down, start_piece)
+        pointer_pos = move_pointer(pointer_pos, :down, start_piece, already_selected)
       when "\r"
         @last_move = pointer_pos.dup
         return pointer_pos
@@ -113,7 +113,7 @@ class Game
     end
   end
 
-  def move_pointer(pointer, direction, start_piece)
+  def move_pointer(pointer, direction, start_piece, already_selected)
     directions = {
       up:     [-1,  0],
       down:   [ 1,  0],
@@ -128,7 +128,7 @@ class Game
     return pointer unless in_bounds(new_pos)
 
 
-    @board.render(piece: start_piece, pointer: new_pos)
+    @board.render(piece: start_piece, pointer: new_pos, already_selected: already_selected)
 
     new_pos
   end

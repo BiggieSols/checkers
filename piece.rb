@@ -67,9 +67,7 @@ class Piece
   def perform_slide(new_pos)
     raise InvalidMoveError.new("not a valid slide") unless valid_slide?( new_pos )
     old_pos = @position.dup
-    puts "current position has #{@board[*old_pos].inspect}"
     @board.move( self, new_pos )
-    puts "old position has #{@board[*old_pos].inspect}"
     maybe_promote
   end
 
@@ -115,7 +113,6 @@ class Piece
   def move(new_pos)
     @position = new_pos
   end
-
 
   private
 
@@ -192,23 +189,15 @@ class Piece
 
   def valid_recursive_jumps
     valid_rec_jumps = valid_jumps
-
     return valid_rec_jumps if valid_jumps.empty?
-
     valid_jumps.each do |jump|
       board_dup = @board.dup
-
       self_dup = board_dup[ @position[0], @position[1] ]
-
       self_dup.perform_jump(jump)
-
       new_jumps = self_dup.valid_recursive_jumps
-
       new_jumps.delete(@position)
-
       valid_rec_jumps += new_jumps
     end
-
     valid_rec_jumps
   end
 end 

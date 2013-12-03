@@ -53,7 +53,7 @@ class Board
       8.times do |col_index|
 
         background = ((row_index + col_index) % 2 == 0) ? :light_blue : :light_green
-        background = :red if selected_piece.has_move?( [row_index, col_index] ) #change to recursive later
+        background = :red if selected_piece.has_recursive_move?( [row_index, col_index] )
         background = :black if [row_index, col_index] == params[:pointer]
 
         piece = self[row_index, col_index]
@@ -78,9 +78,6 @@ class Board
     return "White" if all_pieces(:b).empty?
     "Incomplete"
   end
-
-  # def draw?
-  # end
 
   def dup
     dup_board = Board.new(false)
@@ -108,8 +105,6 @@ class Board
   end
 
   def empty_pos?(pos)
-    # print "Testing empty position at #{pos}    "
-    # print "board at this position is #{self[ pos[0], pos[1] ].inspect}"
     self[*pos].nil?
   end
 
